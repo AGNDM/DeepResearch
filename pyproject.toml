@@ -36,7 +36,7 @@ dependencies = [
     "openai==2.26.0",
     "pydantic==2.12.5",
     "requests==2.32.5",
-    "arxiv==2.0.0",
+    "arxiv>=2.1.0",
 ]
 
 [project.optional-dependencies]

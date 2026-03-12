@@ -16,10 +16,12 @@ Choose one of the two methods below:
 
 ### Method 1: Using pip
 
-Install directly from GitHub Release:
+Install directly from GitHub Release and download main.py:
 
 ```bash
 pip install https://github.com/AGNDM/DeepResearch/releases/download/v0.1.0/multiagent_llm-0.1.0-py3-none-any.whl
+
+curl -o main.py https://raw.githubusercontent.com/AGNDM/DeepResearch/master/main.py
 ```
 
 ### Method 2: Clone from Source
