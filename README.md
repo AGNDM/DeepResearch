@@ -19,7 +19,7 @@ Choose one of the two methods below:
 Install directly from GitHub Release:
 
 ```bash
-pip install https://github.com/AGNDM/DeepResearch/releases/download/v0.1.0/multiagent_llm-0.1.0.whl
+pip install https://github.com/AGNDM/DeepResearch/releases/download/v0.1.0/multiagent_llm-0.1.0-py3-none-any.whl
 ```
 
 ### Method 2: Clone from Source
@@ -29,7 +29,7 @@ Clone the repository and install from source:
 ```bash
 # Clone the repository
 git clone https://github.com/AGNDM/DeepResearch.git
-cd MultiagentLLM
+cd DeepResearch
 
 # Create virtual environment
 python3 -m venv .venv

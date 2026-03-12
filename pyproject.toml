@@ -41,12 +41,12 @@ dependencies = [
 dev = ["pytest", "black", "flake8", "mypy"]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/MultiagentLLM"
-Documentation = "https://github.com/yourusername/MultiagentLLM"
-Repository = "https://github.com/yourusername/MultiagentLLM.git"
+Homepage = "https://github.com/AGNDM/DeepResearch"
+Documentation = "https://github.com/AGNDM/DeepResearch"
+Repository = "https://github.com/AGNDM/DeepResearch.git"
 
 [tool.setuptools]
-packages = ["src"]
+packages = ["src", "src.agents"]
 
 [tool.setuptools.package-data]
 src = ["py.typed"]
