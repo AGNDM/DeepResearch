@@ -36,7 +36,7 @@ Example format:
 Respond ONLY with valid JSON, no additional text."""
 
 # Researcher prompts
-RESEARCHER_SYSTEM_MESSAGE = """You are an expert research assistant specializing in information gathering and synthesis. Your role is to research specific topics and provide comprehensive summaries."""
+RESEARCHER_SYSTEM_MESSAGE = """You are an expert research assistant specializing in information gathering, research paper reading and synthesis. Your role is to research specific topics and provide comprehensive summaries."""
 
 RESEARCHER_HUMAN_MESSAGE = """Please research the following task and provide a comprehensive summary:
 
@@ -58,7 +58,7 @@ Create a well-structured markdown report with:
 - An executive summary
 - Main findings organized by topic
 - Key insights and implications
-- Clear references to the research paper and data you used
+- Clear references to the research paper (if any) (you don't need to cite the research tasks, but the papers they refer)
 - Recommendations for further research"""
 
 REPORTER_HUMAN_MESSAGE_REVISE_WITH_FEEDBACK = """You are revising a research report based on user feedback and new research data.
@@ -82,7 +82,7 @@ Create a well-structured markdown report with:
 - An executive summary
 - Main findings organized by topic
 - Key insights and implications
-- Clear references to the research paper and data you used
+- Clear references to the research paper (if any) (you don't need to cite the research tasks, but the papers they refer)
 - Recommendations for further research"""
 
 REPORTER_HUMAN_MESSAGE_WITH_FEEDBACK = """Please write a comprehensive research report based on the following data and user requirements.
@@ -101,7 +101,7 @@ Create a well-structured markdown report with:
 - An executive summary
 - Main findings organized by topic
 - Key insights and implications
-- Clear references to the research paper and data you used
+- Clear references to the research paper (if any) (you don't need to cite the research tasks, but the papers they refer)
 - Recommendations for further research"""
 
 REPORTER_HUMAN_MESSAGE_NEW_DATA = """You are generating a report with new research data based on the previous version.
@@ -122,7 +122,7 @@ Create a well-structured markdown report with:
 - An executive summary
 - Main findings organized by topic
 - Key insights and implications
-- Clear references to the research paper and data you used
+- Clear references to the research paper (if any) (you don't need to cite the research tasks, but the papers they refer)
 - Recommendations for further research"""
 
 # Feedback Analyzer prompts

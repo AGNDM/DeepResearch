@@ -1,0 +1,10 @@
+langchain==1.2.11
+langchain-core==1.2.18
+langchain-openai==1.1.11
+langchain-community==0.4.1
+langgraph==1.1.0
+langgraph-prebuilt==1.0.8
+python-dotenv==1.2.2
+openai==2.26.0
+pydantic==2.12.5
+requests==2.32.5

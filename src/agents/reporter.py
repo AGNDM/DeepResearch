@@ -16,9 +16,9 @@ load_dotenv()
 
 # Initialize LLM for reporter
 _llm_reporter = ChatOpenAI(
-    model="stepfun/step-3.5-flash:free",
+    model=os.getenv("LLM_MODEL", "stepfun/step-3.5-flash:free"),
     api_key=os.getenv("LLM_API_KEY"),
-    base_url="https://openrouter.ai/api/v1",
+    base_url=os.getenv("LLM_BASE_URL", "https://openrouter.ai/api/v1"),
     temperature=0.3  # Slightly higher for more creative report writing
 )
 

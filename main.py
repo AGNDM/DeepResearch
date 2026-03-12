@@ -111,52 +111,47 @@ def run_workflow_with_hitl(query: str):
     print("\n" + "-" * 60)
     print(f"\n[FINAL] Final Report\n")
     print(state.get("draft", "[]"))
-    print(f"\n[STATS] Statistics:")
-    print(f"  - Planned Tasks: {len(state.get('plan', []))}")
-    print(f"  - Completed Tasks: {len(state.get('completed_tasks', []))}")
-    print(f"  - Data Sources: {len(state.get('research_data', {}))}")
-    print(f"  - Review Rounds: {state.get('revision_count', 0)}")
-    print(f"  - Revision Versions: {len(draft_history)}")
-    print(f"  - Process Iterations: {iteration}")
-    
-    # Display research data
-    research_data = state.get("research_data", {})
-    if research_data:
-        print(f"\n[SOURCES] Research Data Summary:")
-        print("-" * 60)
-        for idx, (task, data) in enumerate(research_data.items(), 1):
-            print(f"\n{idx}. [TASK] {task}")
-            print("-" * 40)
-            # Display first 300 chars as preview
-            preview = data[:300] + "..." if len(data) > 300 else data
-            print(preview)
-    
-    # Display feedback analysis info
-    analysis_reason = state.get("feedback_analysis_reason", "")
-    if analysis_reason:
-        print(f"\n[ANALYSIS] Last Feedback Analysis:")
-        print(f"  - Analysis Reason: {analysis_reason}")
 
 
 def save_report_to_file(state: ResearchState) -> None:
-    """Save final report to file"""
+    """Save final report and all drafts to organized folder"""
     import os
     from datetime import datetime
+    import json
     
-    # Create output directory if not exists
-    output_dir = "reports"
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
+    # Create main reports directory if not exists
+    reports_dir = "reports"
+    if not os.path.exists(reports_dir):
+        os.makedirs(reports_dir)
     
-    # Generate filename with timestamp
+    # Generate timestamp and create session folder
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    report_filename = os.path.join(output_dir, f"report_{timestamp}.md")
+    session_dir = os.path.join(reports_dir, f"report_{timestamp}")
+    if not os.path.exists(session_dir):
+        os.makedirs(session_dir)
     
-    # Save main report
-    with open(report_filename, 'w', encoding='utf-8') as f:
+    # Save final report
+    final_report_path = os.path.join(session_dir, "final_report.md")
+    with open(final_report_path, 'w', encoding='utf-8') as f:
         f.write(state.get("draft", ""))
+    print(f"\n[SAVED] Final report saved to: {final_report_path}")
     
-    print(f"\n[SAVED] Report saved to: {report_filename}")
+    # Save all draft versions from history
+    draft_history = state.get("draft_history", [])
+    if draft_history:
+        drafts_dir = os.path.join(session_dir, "drafts")
+        if not os.path.exists(drafts_dir):
+            os.makedirs(drafts_dir)
+        
+        for i, history_item in enumerate(draft_history, 1):
+            revision = history_item.get("revision", i)
+            draft_content = history_item.get("draft", "")
+            draft_filename = os.path.join(drafts_dir, f"draft_v{revision}.md")
+            with open(draft_filename, 'w', encoding='utf-8') as f:
+                f.write(draft_content)
+        print(f"[SAVED] {len(draft_history)} draft versions saved to: {drafts_dir}")
+    
+    print(f"\n[REPORT FOLDER] All files organized in: {session_dir}")
     return
 
 

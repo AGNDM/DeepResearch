@@ -11,17 +11,17 @@ try:
     if os.getenv("TAVILY_API_KEY"):
         tavily_tool = TavilySearchResults(max_results=3)
         research_tools.append(tavily_tool)
-        print("✓ Tavily search tool loaded")
+        print("Tavily search tool loaded")
 except Exception as e:
-    print(f"⚠️  Warning: Tavily search tool not available: {str(e)}")
+    print(f"Warning: Tavily search tool not available: {str(e)}")
 
-# Try to add ArXiv search (doesn't require API key)
+# Try to add ArXiv search 
 try:
     arxiv_tool = ArxivQueryRun()
     research_tools.append(arxiv_tool)
-    print("✓ ArXiv search tool loaded")
+    print("ArXiv search tool loaded")
 except Exception as e:
-    print(f"⚠️  Warning: ArXiv tool not available: {str(e)}")
+    print(f"Warning: ArXiv tool not available: {str(e)}")
 
 # If no tools available, create dummy tools for demonstration
 if not research_tools:
@@ -40,4 +40,4 @@ if not research_tools:
     research_tools = [search_web, search_papers]
     print("✓ Demo tools loaded (no real tools available)")
 
-print(f"📦 Total research tools available: {len(research_tools)}")
+print(f"Total research tools available: {len(research_tools)}")
