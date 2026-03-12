@@ -95,21 +95,86 @@ python3 main.py
 
 You'll be prompted to enter a research query, and the system will generate a report with feedback refinement.
 
-## Workflow
+## System Architecture
+
+The system follows a **multi-agent workflow** with intelligent routing and human-in-the-loop feedback:
 
 ```
-User Query
-   ↓
-[Planner] → Create research plan
-   ↓
-[Researcher] → Gather data
-   ↓
-[Reporter] → Generate report
-   ↓
-[Review] → Provide feedback (or type 'approve')
-   ↓
-[Route] → Process feedback or finalize
+                           ┌─────────────────────────────────────────┐
+                           │         USER QUERY INPUT                │
+                           └──────────────┬──────────────────────────┘
+                                          │
+                                          ▼
+                        ┌──────────────────────────────────┐
+                        │  COORDINATOR ROUTER (Decision)  │
+                        │  - Analyzes current state        │
+                        │  - Routes to next agent          │
+                        └──┬──────────┬──────────┬────────┬┘
+                           │          │          │        │
+                ┌──────────▼┐  ┌──────▼───┐  ┌──▼──────┐ │
+                │  PLANNER  │  │RESEARCHER│  │REPORTER│ │
+                ├───────────┤  ├──────────┤  ├────────┤ │
+                │ Creates   │  │ Executes │  │Generates│ │
+                │ research  │  │ research │  │markdown │ │
+                │ plan      │  │ in       │  │report   │ │
+                │ (tasks)   │  │parallel  │  │from     │ │
+                │           │  │using     │  │research │ │
+                │           │  │Tavily &  │  │data     │ │
+                │           │  │ArXiv     │  │         │ │
+                └───────────┘  └──────────┘  └────────┘ │
+                                                         │
+                                ┌────────────────────────▼──────┐
+                                │   HUMAN REVIEW STAGE          │
+                                │ (User views report & feedback)│
+                                └────────────┬───────────────────┘
+                                             │
+                                             ▼
+                                    ┌──────────────────┐
+                                    │  USER FEEDBACK   │
+                                    │ - "approve"      │
+                                    │ - specific note  │
+                                    └────────┬────────┘
+                                             │
+                                             ▼
+                                ┌────────────────────────────┐
+                                │  FEEDBACK ANALYZER         │
+                                ├────────────────────────────┤
+                                │ Uses LLM to:               │
+                                │ 1. Parse feedback intent   │
+                                │ 2. Classify feedback type  │
+                                │ 3. Route to target agent   │
+                                │    (Planner/Researcher/    │
+                                │     Reporter/End)          │
+                                └────────────┬───────────────┘
+                                             │
+                    ┌────────────────────────┴────────────────────┐
+                    │ Routes back to COORDINATOR ROUTER            │
+                    └────────────────────────┬────────────────────┘
+                                             │
+                    ┌────────────────────────┴────────────────────┐
+                    │ Iterative Refinement Loop until approved    │
+                    └─────────────────────────────────────────────┘
 ```
+
+### Agent Roles
+
+| Agent | Responsibility | Tools |
+|-------|----------------|-------|
+| **Planner** | Break down research query into actionable tasks | - |
+| **Researcher** | Execute tasks in parallel, gather information | Tavily (web search), ArXiv (papers) |
+| **Reporter** | Synthesize research data into markdown report | - |
+| **Feedback Analyzer** | Parse user feedback and route to appropriate agent | LLM analysis |
+| **Coordinator Router** | Intelligent state-based routing decisions | Multi-priority decision tree |
+
+### Workflow Steps
+
+1. **Initial Planning**: User enters query → Planner creates research plan
+2. **Parallel Research**: Researcher executes all tasks simultaneously
+3. **Report Generation**: Reporter creates markdown report from findings
+4. **Human Review**: User reviews report and provides feedback (or approves)
+5. **Feedback Analysis**: Feedback Analyzer determines intent and target agent
+6. **Iterative Refinement**: Loop back to step 2 or 3 until user approves
+7. **Finalization**: Report is saved to `reports/` directory
 
 ## Project Structure
 
@@ -147,20 +212,51 @@ Enter your research query: Machine Learning in Healthcare
 
 [START] Starting Research Workflow
 [PLAN] Creating research plan...
-[RESEARCH] Gathering data...
+  - Task 1: Find current applications of ML in healthcare
+  - Task 2: Research latest ML models for diagnosis
+  - Task 3: Explore ethical considerations
+
+[RESEARCH] Gathering data in parallel...
 [REPORTER] Generating report...
 
 [FINAL] Final Report
-...report content...
+Generated report with 3 sections...
 
 Please provide your feedback (or type 'approve'):
->> approve
+>>
 ```
 
-## Feedback Types
+## Feedback & Iterative Refinement
 
-- **"approve"** - Finalize the report
-- **"..."** - Any other text triggers feedback analysis and processing
+The system supports intelligent feedback routing for iterative improvement:
+
+### Feedback Types
+
+| Feedback | Behavior | Routed To |
+|----------|----------|-----------|
+| **`approve`** | Accept report and finalize | End (Save report) |
+| **Search/data issues** | "Add more recent papers" | **Researcher** (re-search) |
+| **Planning issues** | "Find more on ethics" | **Planner** (revise plan) |
+| **Report issues** | "Rewrite the intro section" | **Reporter** (revise draft) |
+| **General comment** | "This looks good but..." | **Analyzer** (parse intent) |
+
+### Example Feedback Flow
+
+```
+User: "Add more on ethical implications"
+  ↓
+[FEEDBACK ANALYZER] Detects: "add" (search) + "ethical" (topic refinement)
+  ↓
+Routes to: RESEARCHER (with refined tasks)
+  ↓
+[RESEARCHER] Executes new search with ethical focus
+  ↓
+Routes to: REPORTER (with new findings)
+  ↓
+[REPORTER] Generates updated report
+  ↓
+Back to: HUMAN REVIEW
+```
 
 ## Report Output
 
