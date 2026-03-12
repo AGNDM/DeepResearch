@@ -1,5 +1,5 @@
 # src/tools.py - Research tools for information gathering
-from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_tavily import TavilySearch
 from langchain_community.tools.arxiv.tool import ArxivQueryRun
 import os
 
@@ -9,7 +9,7 @@ research_tools = []
 # Try to add Tavily search if API key is available
 try:
     if os.getenv("TAVILY_API_KEY"):
-        tavily_tool = TavilySearchResults(max_results=3)
+        tavily_tool = TavilySearch()
         research_tools.append(tavily_tool)
         print("Tavily search tool loaded")
 except Exception as e:
