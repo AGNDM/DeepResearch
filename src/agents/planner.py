@@ -1,6 +1,11 @@
 from langchain_openai import ChatOpenAI
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, SystemMessage
 from src.state import ResearchState
+from src.prompts import (
+    PLANNER_SYSTEM_MESSAGE, 
+    PLANNER_HUMAN_MESSAGE,
+    PLANNER_HUMAN_MESSAGE_WITH_FEEDBACK
+)
 import os
 import json
 from dotenv import load_dotenv
@@ -17,22 +22,29 @@ _llm_planner = ChatOpenAI(
 
 
 def llm_planner(state: ResearchState) -> dict:
-    """使用LLM生成研究计划"""
-    print("\n🤖 Planner (LLM): 正在生成计划...")
+    """Use LLM to generate research plan"""
+    print("\n[Planner] Generating plan...")
     query = state.get("query", "")
+    refined_feedback = state.get("refined_feedback", "")
     
-    prompt = f"""You are an expert research planner. Based on the research query below, break it down into 3-5 specific research tasks that would help answer the query comprehensively.
-
-Query: {query}
-
-Please respond with a JSON object containing a "tasks" key with a list of task strings. Each task should be specific and actionable.
-Example format:
-{{"tasks": ["Task 1: Find background information", "Task 2: Search recent papers", "Task 3: Analyze applications"]}}
-
-Respond ONLY with valid JSON, no additional text."""
+    # Choose appropriate prompt template based on whether there's feedback
+    if refined_feedback:
+        planner_prompt = PLANNER_HUMAN_MESSAGE_WITH_FEEDBACK.format(
+            query=query,
+            refined_feedback=refined_feedback
+        )
+        print(f"   [FEEDBACK] Incorporating user feedback into planning...")
+    else:
+        planner_prompt = PLANNER_HUMAN_MESSAGE.format(query=query)
+    
+    # Create structured messages with system and human roles
+    messages = [
+        SystemMessage(content=PLANNER_SYSTEM_MESSAGE),
+        HumanMessage(content=planner_prompt)
+    ]
     
     try:
-        response = _llm_planner.invoke([HumanMessage(content=prompt)])
+        response = _llm_planner.invoke(messages)
         response_text = response.content.strip()
         
         # Try to parse JSON from response
@@ -55,14 +67,31 @@ Respond ONLY with valid JSON, no additional text."""
                    if line.strip() and not line.strip().startswith('{') and not line.strip().startswith('}')]
             if not plan:
                 # Ultimate fallback
-                plan = ["任务1：查背景", "任务2：查最新论文", "任务3：查临床应用"]
+                plan = ["Task 1: Gather background information", "Task 2: Search recent research", "Task 3: Identify applications"]
         
-        print(f"   📋 生成的任务: {plan}")
-        return {"plan": plan}
+        print(f"   [TASKS] Generated tasks: {plan}")
+        return {
+            "plan": plan,
+            "completed_tasks": [],
+            "research_data": {},  # Clear old research data to enable fresh research on new tasks
+            "draft": "",  # Clear old draft to prepare for new report generation
+            # DO NOT clear refined_feedback - let reporter and others use it too
+            "feedback_target_agent": None,  # Clear feedback target agent after execution
+            "feedback_analysis_reason": ""  # Clear analysis reason
+        }
         
     except Exception as e:
-        print(f"   ⚠️  LLM调用出错: {str(e)}, 使用备用计划")
+        print(f"   [ERROR] LLM call error: {str(e)}, using fallback plan")
         # Fallback to mock plan if LLM fails
         plan = ["Task 1: Gather background information", "Task 2: Search recent research", "Task 3: Identify applications"]
-        print(f"   📋 备用任务: {plan}")
-        return {"plan": plan}
+        print(f"   [FALLBACK] Fallback tasks: {plan}")
+        return {
+            "plan": plan,
+            "completed_tasks": [],
+            "research_data": {},  # Clear old research data to enable fresh research on new tasks
+            "draft": "",  # Clear old draft to prepare for new report generation
+            # DO NOT clear refined_feedback - let reporter and others use it too
+            "feedback_target_agent": None,
+            "feedback_analysis_reason": ""
+            # Note: DO NOT clear "feedback" - let reporter preserve user feedback
+        }

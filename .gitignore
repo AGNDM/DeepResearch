@@ -4,4 +4,6 @@ __pycache__/
 .ipynb_checkpoints/
 .venv/
 venv/
-WORKFLOW_SUMMARY.md
+WORKFLOW_SUMMARY.mdreports/
+reports_example/
+reports/
