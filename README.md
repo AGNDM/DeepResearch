@@ -158,13 +158,13 @@ The system follows a **multi-agent workflow** with intelligent routing and human
 
 ### Agent Roles
 
-| Agent | Responsibility | Tools |
-|-------|----------------|-------|
-| **Planner** | Break down research query into actionable tasks | - |
-| **Researcher** | Execute tasks in parallel, gather information | Tavily (web search), ArXiv (papers) |
-| **Reporter** | Synthesize research data into markdown report | - |
-| **Feedback Analyzer** | Parse user feedback and route to appropriate agent | LLM analysis |
-| **Coordinator Router** | Intelligent state-based routing decisions | Multi-priority decision tree |
+| Agent                  | Responsibility                                     | Tools                               |
+| ---------------------- | -------------------------------------------------- | ----------------------------------- |
+| **Planner**            | Break down research query into actionable tasks    | -                                   |
+| **Researcher**         | Execute tasks in parallel, gather information      | Tavily (web search), ArXiv (papers) |
+| **Reporter**           | Synthesize research data into markdown report      | -                                   |
+| **Feedback Analyzer**  | Parse user feedback and route to appropriate agent | LLM analysis                        |
+| **Coordinator Router** | Intelligent state-based routing decisions          | Multi-priority decision tree        |
 
 ### Workflow Steps
 
@@ -232,13 +232,13 @@ The system supports intelligent feedback routing for iterative improvement:
 
 ### Feedback Types
 
-| Feedback | Behavior | Routed To |
-|----------|----------|-----------|
-| **`approve`** | Accept report and finalize | End (Save report) |
-| **Search/data issues** | "Add more recent papers" | **Researcher** (re-search) |
-| **Planning issues** | "Find more on ethics" | **Planner** (revise plan) |
-| **Report issues** | "Rewrite the intro section" | **Reporter** (revise draft) |
-| **General comment** | "This looks good but..." | **Analyzer** (parse intent) |
+| Feedback               | Behavior                    | Routed To                   |
+| ---------------------- | --------------------------- | --------------------------- |
+| **`approve`**          | Accept report and finalize  | End (Save report)           |
+| **Search/data issues** | "Add more recent papers"    | **Researcher** (re-search)  |
+| **Planning issues**    | "Find more on ethics"       | **Planner** (revise plan)   |
+| **Report issues**      | "Rewrite the intro section" | **Reporter** (revise draft) |
+| **General comment**    | "This looks good but..."    | **Analyzer** (parse intent) |
 
 ### Example Feedback Flow
 
