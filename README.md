@@ -10,32 +10,88 @@ A LangGraph-based multi-agent research workflow that breaks down research querie
 - **Feedback Analyzer**: Routes user feedback to appropriate agents
 - **Human-in-the-Loop**: Iterative refinement through feedback
 
-## Quick Start
+## Installation
 
-### Installation
+Choose one of the two methods below:
+
+### Method 1: Using pip
+
+Install directly from GitHub Release:
 
 ```bash
+pip install https://github.com/AGNDM/DeepResearch/releases/download/v0.1.0/multiagent_llm-0.1.0.whl
+```
+
+### Method 2: Clone from Source
+
+Clone the repository and install from source:
+
+```bash
+# Clone the repository
+git clone https://github.com/AGNDM/DeepResearch.git
+cd MultiagentLLM
+
+# Create virtual environment
 python3 -m venv .venv
 source .venv/bin/activate
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-### Configuration
+## Configuration
 
-Create a `.env` file with your API keys:
+After installation, configure your API keys:
+
+### 1. Create `.env` file
 
 ```bash
-LLM_API_KEY=your_api_key
-LLM_BASE_URL=https://openrouter.ai/api/v1  # or your provider
-LLM_MODEL=stepfun/step-3.5-flash:free      # or your model
-TAVILY_API_KEY=your_tavily_key
+cp .env.example .env
 ```
 
-### Run
+### 2. Get your API keys
+
+You need API keys from two services:
+
+**LLM Provider**(Example):
+
+- [OpenRouter](https://openrouter.ai)
+- [OpenAI](https://platform.openai.com/api-keys)
+
+**Search API**:
+
+- [Tavily](https://tavily.com) - Web search capabilities
+
+### 3. Edit `.env` file
+
+```bash
+LLM_API_KEY=sk-or-v1-xxxxxxxxxxxx        # Your LLM API key
+LLM_BASE_URL=https://openrouter.ai/api/v1 # API endpoint
+LLM_MODEL=stepfun/step-3.5-flash:free     # Model name
+TAVILY_API_KEY=tvly-xxxxxxxxxxxx         # Your Tavily API key
+```
+
+## Quick Start
+
+After completing the configuration above, run the system:
+
+**If you used `pip install` (Method 1):**
 
 ```bash
 python3 main.py
 ```
+
+**If you cloned from source (Method 2):**
+
+```bash
+# Activate virtual environment first
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Then run
+python3 main.py
+```
+
+You'll be prompted to enter a research query, and the system will generate a report with feedback refinement.
 
 ## Workflow
 
@@ -58,15 +114,22 @@ User Query
 ```
 MultiagentLLM/
 ├── main.py                 # Entry point
+├── pyproject.toml          # Project metadata (for packaging)
+├── setup.py                # Setup script (for compatibility)
 ├── requirements.txt        # Dependencies
-├── .env                    # API keys
+├── .env.example            # Environment variables template
+├── LICENSE                 # MIT License
+├── README.md              # This file
 ├── reports/               # Generated reports (auto-created)
+├── dist/                  # Built packages (.whl, .tar.gz)
 └── src/
+    ├── __init__.py        # Package initialization
     ├── state.py           # ResearchState definition
     ├── prompts.py         # LLM prompts
     ├── tools.py           # Tool configurations
     ├── workflow.py        # LangGraph workflow
     └── agents/
+        ├── __init__.py
         ├── planner.py
         ├── researcher.py
         ├── reporter.py
